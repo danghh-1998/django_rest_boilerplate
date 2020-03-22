@@ -1,0 +1,36 @@
+image: python:3.7
+
+build:
+  only:
+    - pushes
+  except:
+    - merge_requests
+    - master
+  variables:
+    MYSQL_DATABASE: ci_test
+    MYSQL_ROOT_PASSWORD: '12345678'
+    MYSQL_USER: root
+    DJANGO_ENV: ci
+  services:
+    - name: mysql:8.0
+      entrypoint: ['/entrypoint.sh', '--default-authentication-plugin=mysql_native_password']
+  before_script:
+    - pip install -r requirements.txt
+  script:
+    - python manage.py makemigrations
+    - python manage.py migrate
+    - python manage.py test
+
+deploy:
+  only:
+    - master
+  before_script:
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$PRODUCT_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 400 ~/.ssh/id_rsa
+    - echo "$PRODUCT_PUBLIC_KEY" > ~/.ssh/id_rsa.pub
+  script:
+    - echo "${PRODUCT_SERVER_IP}"
+    - ssh -o StrictHostKeyChecking=no deploy@"${PRODUCT_SERVER_IP}" 'bash -s' < scripts/deploy.sh
