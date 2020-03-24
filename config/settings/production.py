@@ -3,6 +3,12 @@ from .base import *
 DEBUG = False
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
+TOKEN_EXPIRED_AFTER_SECONDS = os.environ.get('TOKEN_EXPIRED_AFTER_SECONDS')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+VERIFY_EMAIL_TOKEN_EXPIRED_AFTER = os.environ.get('VERIFY_EMAIL_TOKEN_EXPIRED_AFTER')
 
 DATABASES = {
     'default': {

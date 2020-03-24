@@ -8,9 +8,25 @@ env = Env()
 if os.path.exists(ENV_PATH):
     env.read_env(ENV_PATH)
 
+TOKEN_EXPIRED_AFTER_SECONDS = env.int('TOKEN_EXPIRED_AFTER_SECONDS')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+SENDGRID_API_KEY = env('SENDGRID_API_KEY')
+VERIFY_EMAIL_TOKEN_EXPIRED_AFTER = env.int('VERIFY_EMAIL_TOKEN_EXPIRED_AFTER')
+
 DEBUG = True
+INSTALLED_APPS.append('debug_toolbar')
+MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware', )
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 INTERNAL_IPS = [
     '127.0.0.1',
+    '0.0.0.0'
 ]
 
 DATABASES = {
@@ -22,13 +38,3 @@ DATABASES = {
         'NAME': env('DB_NAME')
     }
 }
-
-INSTALLED_APPS.append('debug_toolbar')
-
-MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware', )
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

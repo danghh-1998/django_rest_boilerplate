@@ -3,7 +3,11 @@ certifi==2019.11.28
 Django==3.0.4
 django-debug-toolbar==2.2
 django-environ==0.4.5
+django-model-utils==4.0.0
 djangorestframework==3.11.0
 mysqlclient==1.4.6
+Pillow==7.0.0
+python-http-client==3.2.6
 pytz==2019.3
+sendgrid==6.2.0
 sqlparse==0.3.1
