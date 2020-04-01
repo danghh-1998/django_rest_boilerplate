@@ -12,15 +12,16 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='AuthToken',
+            name='Client',
             fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('deleted', models.DateTimeField(editable=False, null=True)),
-                ('key', models.CharField(max_length=40, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField()),
-                ('expired_at', models.DateTimeField()),
+                ('client_name', models.CharField(max_length=255, unique=True)),
+                ('is_active', models.BooleanField(default=True)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'db_table': 'auth_token',
+                'db_table': 'client',
             },
         ),
     ]

@@ -1,15 +1,11 @@
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.base_user import BaseUserManager
+from safedelete.managers import SafeDeleteManager
 
 
-class UserManager(BaseUserManager):
+class UserManager(BaseUserManager, SafeDeleteManager):
     def create_user(self, email, password, **kwargs):
-        if not email:
-            raise ValueError('User must have an email address')
         email = self.normalize_email(email)
         user = self.model(email=email, **kwargs)
         user.set_password(password)
         user.save(using=self._db)
         return user
-
-    def create_superuser(self, email, password, **kwargs):
-        return self.create_user(email=email, password=password, **kwargs)

@@ -19,16 +19,17 @@ USE_TZ = True
 APP_NAME = 'rest boilerplate'
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'safedelete',
 
     'auth_tokens',
-    'users'
+    'users',
+    'clients'
 ]
 
 MIDDLEWARE = [
@@ -43,18 +44,18 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'users.authentication.ExpiringTokenAuthentication',
+        'auth_tokens.services.ExpiringTokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
 }
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
-        'DIRS': [os.path.join(BASE_DIR, 'users', 'templates'), ],
+        'DIRS': [os.path.join(BASE_DIR, 'utils/templates'), ],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',

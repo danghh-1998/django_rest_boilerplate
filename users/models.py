@@ -3,39 +3,55 @@ import os
 from datetime import timedelta
 
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser
 from django.utils import timezone
 from django.conf import settings
-from model_utils import Choices
+from safedelete.models import SafeDeleteModel, SOFT_DELETE_CASCADE
 
 from .managers import UserManager
+from clients.models import Client
 
-GENDER = Choices('Male', 'Female')
 
+class User(AbstractBaseUser, PermissionsMixin, SafeDeleteModel):
+    _safedelete_policy = SOFT_DELETE_CASCADE
 
-class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
-    gender = models.CharField(choices=GENDER, default=GENDER.Male, max_length=10)
-    is_superuser = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-    verify_email_token = models.CharField(max_length=40, default=binascii.hexlify(os.urandom(20)).decode())
-    verify_email_token_expired_at = models.DateTimeField(
-        default=timezone.now() + timedelta(seconds=settings.VERIFY_EMAIL_TOKEN_EXPIRED_AFTER))
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    objects = UserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
+
+    USER = 0
+    ADMIN = 1
+    SUPER_ADMIN = 2
+    SYSTEM_ADMIN = 3
+    USER_TYPE_CHOICES = (
+        (USER, 'USER'),
+        (ADMIN, 'ADMIN'),
+        (SUPER_ADMIN, 'SUPER_ADMIN'),
+        (SYSTEM_ADMIN, 'SYSTEM_ADMIN')
+    )
+
+    email = models.EmailField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
+    tel = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=False)
+    role = models.SmallIntegerField(choices=USER_TYPE_CHOICES, default=0)
+    change_init_password = models.BooleanField(default=False)
+    reset_password_token = models.CharField(max_length=255)
+    reset_password_token_expired_at = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    client = models.ForeignKey(Client, related_name='users', on_delete=models.SET_NULL, unique=False, null=True)
+
+    objects = UserManager()
 
     class Meta:
         app_label = 'users'
         db_table = 'user'
 
-    def get_full_name(self):
+    @property
+    def full_name(self):
         return self.name
 
-    def get_short_name(self):
+    @property
+    def short_name(self):
         return self.name
 
     def __str__(self):
