@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-if [ -d "simple_rest" ]; then
-  cd simple_rest
+eval $(ssh-agent -s)
+if [ -d "rest_boilerplate" ]; then
+  cd rest_boilerplate
   git pull origin master
 else
-  git clone "git@gitlab.com:hoanghaidang/simple_rest.git"
+  git clone "git@gitlab.com:hoanghaidang/rest_boilerplate.git"
 fi
