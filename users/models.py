@@ -1,9 +1,15 @@
+import binascii
+import os
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser
-from safedelete.models import SafeDeleteModel, SOFT_DELETE_CASCADE
+from django.utils import timezone
 from django.conf import settings
+from safedelete.models import SafeDeleteModel, SOFT_DELETE_CASCADE
 
 from .managers import UserManager
+from clients.models import Client
 
 
 class User(AbstractBaseUser, PermissionsMixin, SafeDeleteModel):
@@ -12,16 +18,27 @@ class User(AbstractBaseUser, PermissionsMixin, SafeDeleteModel):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
-    email = models.EmailField(max_length=settings.CHARFIELD_LENGTH, unique=True)
-    name = models.CharField(max_length=settings.CHARFIELD_LENGTH)
-    tel = models.CharField(max_length=settings.CHARFIELD_LENGTH)
-    verify_email_token = models.CharField(max_length=settings.CHARFIELD_LENGTH)
-    verify_email_token_expired_at = models.DateTimeField(null=True)
+    USER = 0
+    ADMIN = 1
+    SUPER_ADMIN = 2
+    SYSTEM_ADMIN = 3
+    USER_TYPE_CHOICES = (
+        (USER, 'USER'),
+        (ADMIN, 'ADMIN'),
+        (SUPER_ADMIN, 'SUPER_ADMIN'),
+        (SYSTEM_ADMIN, 'SYSTEM_ADMIN')
+    )
+
+    email = models.EmailField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
+    tel = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
-    reset_password_token = models.CharField(max_length=settings.CHARFIELD_LENGTH)
-    reset_password_token_expired_at = models.DateTimeField(null=True)
+    role = models.SmallIntegerField(choices=USER_TYPE_CHOICES, default=0)
+    change_init_password = models.BooleanField(default=False)
+    reset_password_token = models.CharField(max_length=255)
+    reset_password_token_expired_at = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    client = models.ForeignKey(Client, related_name='users', on_delete=models.SET_NULL, unique=False, null=True)
 
     objects = UserManager()
 

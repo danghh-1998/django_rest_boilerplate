@@ -6,13 +6,17 @@ AUTH_USER_MODEL = 'users.User'
 ROOT_URLCONF = 'config.urls'
 WSGI_APPLICATION = 'config.wsgi.application'
 
+EMAIL_USE_LTS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+ENAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+
 LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 APP_NAME = 'rest boilerplate'
-TOKEN_LENGTH = 20
-CHARFIELD_LENGTH = 255
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -25,6 +29,7 @@ INSTALLED_APPS = [
 
     'auth_tokens',
     'users',
+    'clients'
 ]
 
 MIDDLEWARE = [
@@ -35,7 +40,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -45,7 +49,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    'EXCEPTION_HANDLER': 'utils.exception_handler.custom_exception_handler',
 }
 
 TEMPLATES = [
