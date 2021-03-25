@@ -62,7 +62,7 @@ pytest-django==3.9.0
 python-dateutil==2.8.1
 python-http-client==3.2.7
 pytz==2020.1
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.23.0
 s3transfer==0.3.3
 sendgrid==6.3.1
